@@ -9,8 +9,31 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  /* Brand Colors */
+  --color-brand-primary: #2563eb;
+  --color-brand-secondary: #4f46e5;
+  --color-brand-accent: #7c3aed;
+
+  /* Surface Colors (Glass) */
+  --color-surface-glass: rgba(255, 255, 255, 0.6);
+  --color-surface-glass-strong: rgba(255, 255, 255, 0.8);
+  --color-surface-glass-card: rgba(255, 255, 255, 0.65);
+
+  /* Semantic Colors */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+
+  /* Typography */
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+
+  /* Shadows */
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-glow-blue: 0 4px 14px rgba(37, 99, 235, 0.25);
+  --shadow-glow-indigo: 0 4px 14px rgba(79, 70, 229, 0.25);
 }
 
 body {

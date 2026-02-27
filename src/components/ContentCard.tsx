@@ -3,30 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { Eye, Star, Heart } from "lucide-react";
+import Badge from "@/components/ui/Badge";
+import { TYPE_CONFIG, SUBJECT_LABELS, DIFFICULTY_CONFIG } from "@/lib/constants/labels";
 import type { Content } from "@/types/content";
-
-const TYPE_CONFIG: Record<string, { label: string; gradient: string }> = {
-  short_video: { label: "숏폼", gradient: "from-rose-500 to-pink-600" },
-  deep_dive: { label: "심화강의", gradient: "from-blue-500 to-indigo-600" },
-  template: { label: "템플릿", gradient: "from-emerald-500 to-teal-600" },
-  case_series: { label: "사례시리즈", gradient: "from-purple-500 to-violet-600" },
-  interactive: { label: "인터랙티브", gradient: "from-amber-500 to-orange-600" },
-};
-
-const SUBJECT_LABELS: Record<string, string> = {
-  pbl_design: "PBL설계",
-  qbl: "QBL",
-  facilitation: "퍼실리테이션",
-  team: "팀운영",
-  assessment: "평가",
-  active_learning: "액티브러닝",
-};
-
-const DIFFICULTY_CONFIG: Record<string, { label: string; color: string }> = {
-  beginner: { label: "입문", color: "bg-green-100/80 text-green-700" },
-  intermediate: { label: "실천", color: "bg-yellow-100/80 text-yellow-700" },
-  advanced: { label: "심화", color: "bg-red-100/80 text-red-700" },
-};
 
 interface ContentCardProps {
   content: Content;
@@ -118,16 +98,18 @@ export default function ContentCard({
         )}
 
         {/* 유형 뱃지 */}
-        <span
-          className={`absolute top-3 left-3 px-2.5 py-1 text-xs font-semibold text-white rounded-lg bg-gradient-to-r ${typeConfig.gradient} shadow-md`}
-        >
-          {typeConfig.label}
-        </span>
+        <div className="absolute top-3 left-3">
+          <Badge variant="gradient" gradient={typeConfig.gradient}>
+            {typeConfig.label}
+          </Badge>
+        </div>
 
         {/* 소요시간 뱃지 */}
-        <span className="absolute bottom-3 right-3 px-2 py-0.5 text-xs font-medium text-white bg-black/50 backdrop-blur-sm rounded-md">
-          {durationDisplay}
-        </span>
+        <div className="absolute bottom-3 right-3">
+          <Badge variant="glass" size="xs" className="rounded-md font-medium">
+            {durationDisplay}
+          </Badge>
+        </div>
       </div>
 
       {/* 카드 콘텐츠 */}
@@ -139,43 +121,21 @@ export default function ContentCard({
 
         {/* 태그들 */}
         <div className="flex items-center gap-1.5 mb-3 flex-wrap">
-          <span className="px-2 py-0.5 text-xs font-medium bg-blue-50/80 text-blue-600 rounded-full backdrop-blur-sm">
-            {subjectLabel}
-          </span>
-          <span
-            className={`px-2 py-0.5 text-xs font-medium rounded-full backdrop-blur-sm ${difficultyConfig.color}`}
-          >
+          <Badge size="xs" className="rounded-full">{subjectLabel}</Badge>
+          <Badge size="xs" color={difficultyConfig.color} className="rounded-full">
             {difficultyConfig.label}
-          </span>
+          </Badge>
         </div>
 
         {/* 하단: 조회수, 별점, 북마크 */}
         <div className="flex items-center justify-between text-xs text-gray-400">
           <div className="flex items-center gap-3">
-            {/* 조회수 */}
             <span className="flex items-center gap-1">
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                />
-              </svg>
+              <Eye className="w-3.5 h-3.5" />
               {content.view_count.toLocaleString()}
             </span>
-
-            {/* 별점 */}
             <span className="flex items-center gap-1">
-              <svg className="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-              </svg>
+              <Star className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
               {content.average_rating > 0 ? content.average_rating.toFixed(1) : "-"}
             </span>
           </div>
@@ -191,19 +151,7 @@ export default function ContentCard({
             } ${!userId ? "opacity-40 cursor-default" : ""}`}
             aria-label={bookmarked ? "북마크 해제" : "북마크"}
           >
-            <svg
-              className="w-4.5 h-4.5"
-              fill={bookmarked ? "currentColor" : "none"}
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-              />
-            </svg>
+            <Heart className="w-4 h-4" fill={bookmarked ? "currentColor" : "none"} />
           </button>
         </div>
       </div>

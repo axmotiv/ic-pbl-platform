@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import type { User } from "@supabase/supabase-js";
+import { Bell, ChevronDown, User, FileText, LogOut, Menu, X } from "lucide-react";
+import type { User as SupaUser } from "@supabase/supabase-js";
 import type { Profile } from "@/types/content";
 
 /* ─── 네비게이션 아이템 ──────────────────────────── */
@@ -26,7 +27,7 @@ const NAV_ITEMS: NavItem[] = [
 export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<SupaUser | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -150,19 +151,7 @@ export default function Navbar() {
                   className="relative p-2 text-gray-400 hover:text-gray-600 hover:bg-white/60 rounded-xl transition-all duration-200"
                   title="알림"
                 >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                    />
-                  </svg>
+                  <Bell className="w-5 h-5" />
                 </button>
 
                 {/* 프로필 드롭다운 */}
@@ -177,19 +166,9 @@ export default function Navbar() {
                     <span className="hidden sm:block text-sm font-medium text-gray-700 max-w-[120px] truncate">
                       {displayName}
                     </span>
-                    <svg
+                    <ChevronDown
                       className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${profileOpen ? "rotate-180" : ""}`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
+                    />
                   </button>
 
                   {profileOpen && (
@@ -214,19 +193,7 @@ export default function Navbar() {
                         onClick={() => setProfileOpen(false)}
                         className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-white/60 transition-colors"
                       >
-                        <svg
-                          className="w-4 h-4 text-gray-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                          />
-                        </svg>
+                        <User className="w-4 h-4 text-gray-400" />
                         프로필
                       </a>
                       <a
@@ -234,19 +201,7 @@ export default function Navbar() {
                         onClick={() => setProfileOpen(false)}
                         className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-white/60 transition-colors"
                       >
-                        <svg
-                          className="w-4 h-4 text-gray-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                          />
-                        </svg>
+                        <FileText className="w-4 h-4 text-gray-400" />
                         내 작업
                       </a>
                       <div className="border-t border-gray-100/50 mt-1">
@@ -254,19 +209,7 @@ export default function Navbar() {
                           onClick={handleLogout}
                           className="flex items-center gap-2.5 w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50/60 transition-colors"
                         >
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                            />
-                          </svg>
+                          <LogOut className="w-4 h-4" />
                           로그아웃
                         </button>
                       </div>
@@ -296,13 +239,7 @@ export default function Navbar() {
               onClick={() => setMobileOpen(!mobileOpen)}
               className="md:hidden p-2 text-gray-600 hover:bg-white/60 rounded-xl transition-all duration-200"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {mobileOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
+              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>

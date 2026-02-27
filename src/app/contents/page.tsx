@@ -3,7 +3,11 @@
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { Search, X } from "lucide-react";
 import ContentCard from "@/components/ContentCard";
+import Button from "@/components/ui/Button";
+import { FilterRow } from "@/components/ui/FilterPill";
+import { Skeleton, SkeletonCard } from "@/components/ui/Skeleton";
 import type { Content } from "@/types/content";
 
 const PAGE_SIZE = 12;
@@ -143,7 +147,6 @@ function ContentsPageInner() {
   return (
     <div className="min-h-screen">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-        {/* 페이지 헤더 */}
         <div className="mb-8 animate-fade-in">
           <h1 className="text-3xl font-bold text-gray-900">콘텐츠 허브</h1>
           <p className="text-sm text-gray-500 mt-2">
@@ -154,19 +157,7 @@ function ContentsPageInner() {
         {/* 검색바 */}
         <form onSubmit={handleSearch} className="mb-6 animate-fade-in" style={{ animationDelay: "0.1s" }}>
           <div className="relative">
-            <svg
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               type="text"
               value={searchInput}
@@ -177,20 +168,10 @@ function ContentsPageInner() {
             {searchInput && (
               <button
                 type="button"
-                onClick={() => {
-                  setSearchInput("");
-                  updateFilter("q", "");
-                }}
+                onClick={() => { setSearchInput(""); updateFilter("q", ""); }}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <X className="w-4 h-4" />
               </button>
             )}
           </div>
@@ -198,104 +179,38 @@ function ContentsPageInner() {
 
         {/* 필터 바 */}
         <div className="space-y-3 mb-10 animate-fade-in" style={{ animationDelay: "0.15s" }}>
-          <FilterRow
-            label="유형"
-            options={TYPE_FILTERS}
-            value={currentType}
-            onChange={(v) => updateFilter("type", v)}
-          />
-          <FilterRow
-            label="주제"
-            options={SUBJECT_FILTERS}
-            value={currentSubject}
-            onChange={(v) => updateFilter("subject", v)}
-          />
-          <FilterRow
-            label="난이도"
-            options={DIFFICULTY_FILTERS}
-            value={currentDifficulty}
-            onChange={(v) => updateFilter("difficulty", v)}
-          />
+          <FilterRow label="유형" options={TYPE_FILTERS} value={currentType} onChange={(v) => updateFilter("type", v)} />
+          <FilterRow label="주제" options={SUBJECT_FILTERS} value={currentSubject} onChange={(v) => updateFilter("subject", v)} />
+          <FilterRow label="난이도" options={DIFFICULTY_FILTERS} value={currentDifficulty} onChange={(v) => updateFilter("difficulty", v)} />
         </div>
 
         {/* 콘텐츠 그리드 */}
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <SkeletonCard key={i} />
-            ))}
+            {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
           </div>
         ) : contents.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-4">
-              <svg
-                className="w-10 h-10 text-gray-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                />
+              <svg className="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
               </svg>
             </div>
-            <p className="text-lg font-medium text-gray-500">
-              아직 콘텐츠가 없습니다
-            </p>
-            <p className="text-sm text-gray-400 mt-1">
-              새로운 콘텐츠가 곧 등록될 예정이에요
-            </p>
+            <p className="text-lg font-medium text-gray-500">아직 콘텐츠가 없습니다</p>
+            <p className="text-sm text-gray-400 mt-1">새로운 콘텐츠가 곧 등록될 예정이에요</p>
           </div>
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
               {contents.map((content) => (
-                <ContentCard
-                  key={content.id}
-                  content={content}
-                  isBookmarked={bookmarkedIds.has(content.id)}
-                  userId={userId}
-                />
+                <ContentCard key={content.id} content={content} isBookmarked={bookmarkedIds.has(content.id)} userId={userId} />
               ))}
             </div>
-
             {hasMore && (
               <div className="flex justify-center mt-12">
-                <button
-                  onClick={handleLoadMore}
-                  disabled={loadingMore}
-                  className="px-8 py-3 glass-strong rounded-2xl text-sm font-medium text-gray-700 hover:bg-white/90 transition-all duration-200 disabled:opacity-50"
-                >
-                  {loadingMore ? (
-                    <span className="flex items-center gap-2">
-                      <svg
-                        className="w-4 h-4 animate-spin"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                        />
-                      </svg>
-                      불러오는 중...
-                    </span>
-                  ) : (
-                    "더보기"
-                  )}
-                </button>
+                <Button variant="glass" size="lg" loading={loadingMore} onClick={handleLoadMore}>
+                  {loadingMore ? "불러오는 중..." : "더보기"}
+                </Button>
               </div>
             )}
           </>
@@ -305,92 +220,27 @@ function ContentsPageInner() {
   );
 }
 
-/* ─── 필터 행 컴포넌트 ──────────────────────────── */
-
-function FilterRow({
-  label,
-  options,
-  value,
-  onChange,
-}: {
-  label: string;
-  options: { value: string; label: string }[];
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <div className="flex items-center gap-3">
-      <span className="text-xs font-medium text-gray-500 shrink-0 w-10">
-        {label}
-      </span>
-      <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-        {options.map((opt) => (
-          <button
-            key={opt.value}
-            onClick={() => onChange(opt.value)}
-            className={`px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 ${
-              value === opt.value
-                ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/25"
-                : "glass text-gray-600 hover:bg-white/80"
-            }`}
-          >
-            {opt.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ─── 스켈레톤 카드 ─────────────────────────────── */
-
-function SkeletonCard() {
-  return (
-    <div className="glass-card rounded-3xl overflow-hidden animate-pulse">
-      <div className="aspect-video bg-white/30" />
-      <div className="p-4 space-y-3">
-        <div className="h-4 bg-white/40 rounded-lg w-3/4" />
-        <div className="h-3 bg-white/30 rounded-lg w-1/2" />
-        <div className="flex gap-2">
-          <div className="h-5 bg-white/30 rounded-full w-14" />
-          <div className="h-5 bg-white/30 rounded-full w-10" />
-        </div>
-        <div className="flex justify-between">
-          <div className="h-3 bg-white/30 rounded w-20" />
-          <div className="h-5 w-5 bg-white/30 rounded-full" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ─── 페이지 전체 스켈레톤 (Suspense fallback) ───── */
-
 function ContentsPageSkeleton() {
   return (
     <div className="min-h-screen">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         <div className="mb-8">
-          <div className="h-8 bg-white/40 rounded-lg w-36 animate-pulse" />
-          <div className="h-4 bg-white/30 rounded-lg w-64 mt-2 animate-pulse" />
+          <Skeleton className="h-8 w-36" />
+          <Skeleton className="h-4 w-64 mt-2" />
         </div>
-        <div className="h-14 glass rounded-2xl mb-6 animate-pulse" />
+        <Skeleton className="h-14 rounded-2xl mb-6" />
         <div className="space-y-3 mb-10">
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="flex items-center gap-3">
-              <div className="h-4 bg-white/40 rounded w-10 animate-pulse" />
+              <Skeleton className="h-4 w-10" />
               <div className="flex gap-2">
-                {Array.from({ length: 4 }).map((_, j) => (
-                  <div key={j} className="h-8 bg-white/30 rounded-full w-16 animate-pulse" />
-                ))}
+                {Array.from({ length: 4 }).map((_, j) => <Skeleton key={j} className="h-8 rounded-full w-16" />)}
               </div>
             </div>
           ))}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <SkeletonCard key={i} />
-          ))}
+          {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
         </div>
       </div>
     </div>
