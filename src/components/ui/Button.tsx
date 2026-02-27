@@ -12,13 +12,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   primary:
-    "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/25",
+    "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:shadow-xl",
   glass:
-    "glass text-gray-700 hover:bg-white/80",
+    "glass text-gray-700 hover:bg-white/80 hover:shadow-md",
   danger:
-    "bg-red-50 border border-red-200 text-red-600 hover:bg-red-100",
+    "bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 hover:shadow-md hover:shadow-red-500/10",
   ghost:
-    "text-gray-600 hover:bg-white/60",
+    "text-gray-600 hover:bg-white/60 hover:text-gray-900",
 };
 
 const SIZE_CLASSES: Record<ButtonSize, string> = {
@@ -40,7 +40,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         disabled={disabled || loading}
-        className={`font-medium transition-all duration-200 flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`}
+        className={`font-medium transition-all duration-200 flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2 ${VARIANT_CLASSES[variant]} ${SIZE_CLASSES[size]} ${className}`}
         {...props}
       >
         {loading ? <Spinner /> : icon}

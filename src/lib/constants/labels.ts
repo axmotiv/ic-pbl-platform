@@ -46,6 +46,14 @@ export const PROBLEM_TYPE_LABELS: Record<string, string> = {
   academic: "학문 탐구형",
 };
 
+export const PBL_STAGE_LABELS: Record<string, string> = {
+  problem_design: "문제설계",
+  facilitation: "퍼실리테이션",
+  team_management: "팀운영",
+  assessment: "평가",
+  reflection: "성찰",
+};
+
 export const TOOL_LABELS: Record<string, string> = {
   problem_designer: "문제설계 어시스턴트",
 };

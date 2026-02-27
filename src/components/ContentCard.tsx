@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Eye, Star, Heart } from "lucide-react";
+import { Eye, Star, Heart, PlayCircle } from "lucide-react";
 import Badge from "@/components/ui/Badge";
 import { TYPE_CONFIG, SUBJECT_LABELS, DIFFICULTY_CONFIG } from "@/lib/constants/labels";
 import type { Content } from "@/types/content";
@@ -22,6 +22,7 @@ export default function ContentCard({
   const router = useRouter();
   const [bookmarked, setBookmarked] = useState(isBookmarked);
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
+  const [bouncing, setBouncing] = useState(false);
 
   const typeConfig = TYPE_CONFIG[content.type] ?? {
     label: content.type,
@@ -36,6 +37,9 @@ export default function ContentCard({
   const handleBookmarkToggle = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!userId || bookmarkLoading) return;
+
+    setBouncing(true);
+    setTimeout(() => setBouncing(false), 300);
 
     setBookmarkLoading(true);
     const supabase = createClient();
@@ -63,7 +67,7 @@ export default function ContentCard({
   return (
     <article
       onClick={() => router.push(`/contents/${content.id}`)}
-      className="group cursor-pointer glass-card rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-1.5"
+      className="group cursor-pointer glass-card rounded-3xl overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/[0.08]"
     >
       {/* 썸네일 */}
       <div className="relative aspect-video bg-gray-100/50 overflow-hidden">
@@ -71,31 +75,16 @@ export default function ContentCard({
           <img
             src={content.thumbnail_url}
             alt={content.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-            <svg
-              className="w-12 h-12 text-gray-300"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50/30 to-violet-50/20">
+            <PlayCircle className="w-12 h-12 text-gray-300" strokeWidth={1.5} />
           </div>
         )}
+
+        {/* hover 오버레이 */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
         {/* 유형 뱃지 */}
         <div className="absolute top-3 left-3">
@@ -115,7 +104,7 @@ export default function ContentCard({
       {/* 카드 콘텐츠 */}
       <div className="p-4">
         {/* 제목 */}
-        <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 leading-snug mb-2 group-hover:text-blue-600 transition-colors">
+        <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 leading-snug mb-2 group-hover:text-blue-600 transition-colors duration-200">
           {content.title}
         </h3>
 
@@ -145,6 +134,8 @@ export default function ContentCard({
             onClick={handleBookmarkToggle}
             disabled={!userId || bookmarkLoading}
             className={`p-1.5 rounded-full transition-all duration-200 ${
+              bouncing ? "animate-spring-bounce" : ""
+            } ${
               bookmarked
                 ? "text-rose-500 hover:bg-rose-50/60"
                 : "text-gray-300 hover:text-rose-400 hover:bg-gray-50/60"

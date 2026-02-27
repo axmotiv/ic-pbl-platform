@@ -65,17 +65,18 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
-      <div className="fixed inset-0 bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-700 -z-10" />
+      <div className="fixed inset-0 bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-700 animate-gradient-shift -z-10" />
       <div className="fixed top-20 right-10 w-72 h-72 bg-violet-400/20 rounded-full blur-3xl animate-blob -z-10" />
       <div className="fixed bottom-20 left-10 w-96 h-96 bg-blue-400/15 rounded-full blur-3xl animate-blob -z-10" style={{ animationDelay: "2s" }} />
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-500/8 rounded-full blur-3xl -z-10" />
 
       <div className="w-full max-w-md animate-fade-in">
-        <div className="glass-strong rounded-3xl shadow-2xl p-8">
+        <div className="glass-strong rounded-3xl elevation-5 p-8">
           <div className="text-center mb-8">
-            <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/25">
+            <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-shadow duration-300 animate-glow-pulse">
               <span className="text-white text-lg font-bold">IC</span>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">회원가입</h1>
+            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">회원가입</h1>
             <p className="text-gray-500 mt-2 text-sm">
               대학 이메일로 가입하고 PBL 커뮤니티에 참여하세요
             </p>

@@ -8,10 +8,10 @@ export default function FilterPill({ label, active, onClick }: FilterPillProps) 
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 ${
+      className={`px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] ${
         active
-          ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/25"
-          : "glass text-gray-600 hover:bg-white/80"
+          ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/30"
+          : "glass text-gray-600 hover:bg-white/80 hover:shadow-sm"
       }`}
     >
       {label}

@@ -32,6 +32,7 @@ export default function Navbar() {
   const [loading, setLoading] = useState(true);
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
 
   /* ─── 유저 & 프로필 로드 ─── */
@@ -79,6 +80,16 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  /* ─── 스크롤 감지 ─── */
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const handleLogout = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
@@ -96,12 +107,16 @@ export default function Navbar() {
   const displayName = profile?.name || user?.email?.split("@")[0] || "";
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-sm">
+    <nav className={`sticky top-0 z-50 transition-all duration-300 ${
+      scrolled
+        ? "bg-white/80 backdrop-blur-2xl border-b border-white/30 shadow-md shadow-black/[0.03]"
+        : "bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-sm"
+    }`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           {/* ─── 로고 ─── */}
           <a href="/" className="flex items-center gap-2.5 shrink-0 group">
-            <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:shadow-blue-500/40 transition-shadow">
+            <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:shadow-blue-500/40 transition-all duration-300 group-hover:scale-105">
               <span className="text-white text-xs font-bold tracking-tight">IC</span>
             </div>
             <span className="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent hidden sm:block">
@@ -172,7 +187,7 @@ export default function Navbar() {
                   </button>
 
                   {profileOpen && (
-                    <div className="absolute right-0 mt-2 w-56 glass-strong rounded-2xl shadow-xl py-1 z-50 animate-fade-in">
+                    <div className="absolute right-0 mt-2 w-56 glass-strong rounded-2xl shadow-xl py-1 z-50 animate-scale-in origin-top-right">
                       {/* 유저 정보 */}
                       <div className="px-4 py-3 border-b border-gray-100/50">
                         <p className="text-sm font-semibold text-gray-900">
@@ -227,7 +242,7 @@ export default function Navbar() {
                 </a>
                 <a
                   href="/auth/signup"
-                  className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-xl transition-all duration-200 shadow-md shadow-blue-500/25"
+                  className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-xl transition-all duration-200 shadow-md shadow-blue-500/25 hover:shadow-lg hover:shadow-blue-500/30 hover:scale-[1.02] active:scale-[0.98]"
                 >
                   회원가입
                 </a>
@@ -247,7 +262,7 @@ export default function Navbar() {
 
       {/* ─── 모바일 메뉴 ─── */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-white/20 bg-white/70 backdrop-blur-xl">
+        <div className="md:hidden border-t border-white/20 bg-white/70 backdrop-blur-xl animate-scale-in origin-top">
           <div className="px-4 py-3 space-y-1">
             {NAV_ITEMS.map((item) => (
               <a

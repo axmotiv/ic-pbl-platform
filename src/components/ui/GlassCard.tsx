@@ -20,7 +20,9 @@ const GlassCard = forwardRef<HTMLDivElement, GlassCardProps>(
       <div
         ref={ref}
         className={`rounded-2xl ${VARIANT_CLASSES[variant]} ${
-          hoverable ? "hover:-translate-y-1 transition-all duration-300" : ""
+          hoverable
+            ? "hover:-translate-y-1.5 hover:shadow-xl hover:shadow-black/[0.06] transition-all duration-300 ease-out"
+            : ""
         } ${className}`}
         {...props}
       >

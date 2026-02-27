@@ -9,6 +9,7 @@ interface BadgeProps {
   size?: BadgeSize;
   gradient?: string;
   color?: string;
+  icon?: ReactNode;
   className?: string;
 }
 
@@ -23,13 +24,15 @@ export default function Badge({
   size = "sm",
   gradient,
   color,
+  icon,
   className = "",
 }: BadgeProps) {
-  const baseClasses = `inline-flex items-center font-semibold rounded-lg ${SIZE_CLASSES[size]}`;
+  const baseClasses = `inline-flex items-center gap-1 font-semibold rounded-lg ${SIZE_CLASSES[size]}`;
 
   if (variant === "gradient" && gradient) {
     return (
-      <span className={`${baseClasses} text-white bg-gradient-to-r ${gradient} shadow-md ${className}`}>
+      <span className={`${baseClasses} text-white bg-gradient-to-r ${gradient} shadow-md shadow-black/10 ${className}`}>
+        {icon}
         {children}
       </span>
     );
@@ -38,6 +41,7 @@ export default function Badge({
   if (variant === "glass") {
     return (
       <span className={`${baseClasses} bg-black/50 backdrop-blur-sm text-white ${className}`}>
+        {icon}
         {children}
       </span>
     );
@@ -46,6 +50,7 @@ export default function Badge({
   // subtle
   return (
     <span className={`${baseClasses} backdrop-blur-sm ${color || "bg-blue-50/80 text-blue-600"} ${className}`}>
+      {icon}
       {children}
     </span>
   );

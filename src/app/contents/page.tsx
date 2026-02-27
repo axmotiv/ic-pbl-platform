@@ -3,7 +3,7 @@
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Search, X } from "lucide-react";
+import { Search, X, Archive } from "lucide-react";
 import ContentCard from "@/components/ContentCard";
 import Button from "@/components/ui/Button";
 import { FilterRow } from "@/components/ui/FilterPill";
@@ -148,7 +148,7 @@ function ContentsPageInner() {
     <div className="min-h-screen">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         <div className="mb-8 animate-fade-in">
-          <h1 className="text-3xl font-bold text-gray-900">콘텐츠 허브</h1>
+          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">콘텐츠 허브</h1>
           <p className="text-sm text-gray-500 mt-2">
             PBL 교수법에 대한 다양한 콘텐츠를 탐색하세요
           </p>
@@ -163,7 +163,7 @@ function ContentsPageInner() {
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="콘텐츠 검색..."
-              className="w-full pl-12 pr-4 py-3.5 glass-strong rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-200 placeholder:text-gray-400"
+              className="w-full pl-12 pr-4 py-3.5 glass-strong rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:shadow-lg focus:shadow-blue-500/10 transition-all duration-300 placeholder:text-gray-400"
             />
             {searchInput && (
               <button
@@ -191,13 +191,11 @@ function ContentsPageInner() {
           </div>
         ) : contents.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-4">
-              <svg className="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-              </svg>
+            <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-blue-50 rounded-full flex items-center justify-center mb-5 shadow-lg shadow-gray-200/50">
+              <Archive className="w-10 h-10 text-gray-300" strokeWidth={1.5} />
             </div>
-            <p className="text-lg font-medium text-gray-500">아직 콘텐츠가 없습니다</p>
-            <p className="text-sm text-gray-400 mt-1">새로운 콘텐츠가 곧 등록될 예정이에요</p>
+            <p className="text-lg font-semibold text-gray-500">아직 콘텐츠가 없습니다</p>
+            <p className="text-sm text-gray-400 mt-1.5">새로운 콘텐츠가 곧 등록될 예정이에요</p>
           </div>
         ) : (
           <>
