@@ -1,0 +1,343 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import type { User } from "@supabase/supabase-js";
+import type { Profile } from "@/types/content";
+
+/* ─── 네비게이션 아이템 ──────────────────────────── */
+
+interface NavItem {
+  href: string;
+  label: string;
+  ready: boolean;
+}
+
+const NAV_ITEMS: NavItem[] = [
+  { href: "/", label: "홈", ready: true },
+  { href: "/contents", label: "콘텐츠", ready: true },
+  { href: "/tools/problem-designer", label: "AI 도구", ready: true },
+  { href: "/community", label: "커뮤니티", ready: false },
+];
+
+/* ─── 컴포넌트 ───────────────────────────────────── */
+
+export default function Navbar() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  /* ─── 유저 & 프로필 로드 ─── */
+
+  useEffect(() => {
+    const supabase = createClient();
+
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+      setLoading(false);
+      if (user) {
+        supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", user.id)
+          .single()
+          .then(({ data }) => {
+            if (data) setProfile(data);
+          });
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (!session?.user) setProfile(null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  /* ─── 외부 클릭으로 드롭다운 닫기 ─── */
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(e.target as Node)
+      ) {
+        setProfileOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    setProfileOpen(false);
+    setMobileOpen(false);
+    router.push("/auth/login");
+    router.refresh();
+  };
+
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    return pathname.startsWith(href);
+  };
+
+  const displayName = profile?.name || user?.email?.split("@")[0] || "";
+
+  return (
+    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="flex items-center justify-between h-16">
+          {/* ─── 로고 ─── */}
+          <a href="/" className="flex items-center gap-2 shrink-0">
+            <div className="w-8 h-8 bg-[#1e3a5f] rounded-lg flex items-center justify-center">
+              <span className="text-white text-xs font-bold">IC</span>
+            </div>
+            <span className="text-lg font-bold text-gray-900 hidden sm:block">
+              IC-PBL
+            </span>
+          </a>
+
+          {/* ─── 중앙 내비게이션 (desktop) ─── */}
+          <div className="hidden md:flex items-center gap-1">
+            {NAV_ITEMS.map((item) => (
+              <a
+                key={item.href}
+                href={item.ready ? item.href : undefined}
+                onClick={
+                  item.ready
+                    ? undefined
+                    : (e) => {
+                        e.preventDefault();
+                      }
+                }
+                className={`relative px-3.5 py-2 text-sm font-medium rounded-lg transition ${
+                  !item.ready
+                    ? "text-gray-300 cursor-default"
+                    : isActive(item.href)
+                      ? "text-[#1e3a5f] bg-blue-50"
+                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                }`}
+              >
+                {item.label}
+                {!item.ready && (
+                  <span className="ml-1 text-[10px] bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded-full">
+                    준비중
+                  </span>
+                )}
+              </a>
+            ))}
+          </div>
+
+          {/* ─── 우측 액션 ─── */}
+          <div className="flex items-center gap-2">
+            {loading ? (
+              <div className="w-20 h-9 bg-gray-100 rounded-lg animate-pulse" />
+            ) : user ? (
+              <>
+                {/* 알림 아이콘 */}
+                <button
+                  className="relative p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition"
+                  title="알림"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                    />
+                  </svg>
+                </button>
+
+                {/* 프로필 드롭다운 */}
+                <div ref={profileRef} className="relative">
+                  <button
+                    onClick={() => setProfileOpen(!profileOpen)}
+                    className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-gray-100 transition"
+                  >
+                    <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-semibold text-sm">
+                      {displayName.charAt(0).toUpperCase()}
+                    </div>
+                    <span className="hidden sm:block text-sm font-medium text-gray-700 max-w-[120px] truncate">
+                      {displayName}
+                    </span>
+                    <svg
+                      className={`w-4 h-4 text-gray-400 transition-transform ${profileOpen ? "rotate-180" : ""}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+
+                  {profileOpen && (
+                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200 py-1 z-50">
+                      {/* 유저 정보 */}
+                      <div className="px-4 py-3 border-b border-gray-100">
+                        <p className="text-sm font-medium text-gray-900">
+                          {profile?.name || "사용자"}
+                        </p>
+                        <p className="text-xs text-gray-400 truncate">
+                          {user.email}
+                        </p>
+                        {profile?.university && (
+                          <p className="text-xs text-gray-400 mt-0.5">
+                            {profile.university} {profile.department}
+                          </p>
+                        )}
+                      </div>
+
+                      <a
+                        href="/auth/profile-setup"
+                        onClick={() => setProfileOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition"
+                      >
+                        <svg
+                          className="w-4 h-4 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                          />
+                        </svg>
+                        프로필
+                      </a>
+                      <a
+                        href="/tools/my-sessions"
+                        onClick={() => setProfileOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition"
+                      >
+                        <svg
+                          className="w-4 h-4 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          />
+                        </svg>
+                        내 작업
+                      </a>
+                      <div className="border-t border-gray-100 mt-1">
+                        <button
+                          onClick={handleLogout}
+                          className="flex items-center gap-2.5 w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                            />
+                          </svg>
+                          로그아웃
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center gap-2">
+                <a
+                  href="/auth/login"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition"
+                >
+                  로그인
+                </a>
+                <a
+                  href="/auth/signup"
+                  className="px-4 py-2 text-sm font-medium text-white bg-[#1e3a5f] hover:bg-[#16304f] rounded-lg transition"
+                >
+                  회원가입
+                </a>
+              </div>
+            )}
+
+            {/* ─── 모바일 햄버거 ─── */}
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {mobileOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ─── 모바일 메뉴 ─── */}
+      {mobileOpen && (
+        <div className="md:hidden border-t border-gray-100 bg-white">
+          <div className="px-4 py-3 space-y-1">
+            {NAV_ITEMS.map((item) => (
+              <a
+                key={item.href}
+                href={item.ready ? item.href : undefined}
+                onClick={() => {
+                  if (item.ready) setMobileOpen(false);
+                }}
+                className={`block px-3 py-2.5 text-sm font-medium rounded-lg transition ${
+                  !item.ready
+                    ? "text-gray-300 cursor-default"
+                    : isActive(item.href)
+                      ? "text-[#1e3a5f] bg-blue-50"
+                      : "text-gray-600 hover:bg-gray-100"
+                }`}
+              >
+                {item.label}
+                {!item.ready && (
+                  <span className="ml-1 text-[10px] bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded-full">
+                    준비중
+                  </span>
+                )}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+}
