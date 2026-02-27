@@ -252,13 +252,13 @@ h3{color:#2563eb;margin-top:24px}
   /* ─── 렌더 ─── */
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+    <div className="min-h-screen">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* 2열 레이아웃: lg 이상에서 좌우 분할 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* ─── 왼쪽: 입력 패널 ─── */}
           <div className="space-y-5">
-            <div>
+            <div className="animate-fade-in">
               <h1 className="text-2xl font-bold text-gray-900">
                 AI 문제설계 어시스턴트
               </h1>
@@ -267,7 +267,7 @@ h3{color:#2563eb;margin-top:24px}
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6 space-y-5">
+            <div className="glass-card rounded-2xl p-5 sm:p-6 space-y-5 animate-fade-in" style={{animationDelay:"0.1s"}}>
               {/* 과목명 */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
@@ -278,7 +278,7 @@ h3{color:#2563eb;margin-top:24px}
                   value={form.courseName}
                   onChange={(e) => updateField("courseName", e.target.value)}
                   placeholder="예: 간호학개론, 산업공학설계"
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  className="w-full px-4 py-2.5 bg-white/50 border border-white/30 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition backdrop-blur-sm"
                 />
               </div>
 
@@ -294,7 +294,7 @@ h3{color:#2563eb;margin-top:24px}
                     updateField("learningObjectives", e.target.value)
                   }
                   placeholder="이 수업을 통해 학생들이 달성해야 할 학습목표를 적어주세요"
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-none"
+                  className="w-full px-4 py-2.5 bg-white/50 border border-white/30 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition resize-none backdrop-blur-sm"
                 />
               </div>
 
@@ -306,7 +306,7 @@ h3{color:#2563eb;margin-top:24px}
                 <select
                   value={form.field}
                   onChange={(e) => updateField("field", e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-white"
+                  className="w-full px-4 py-2.5 bg-white/50 border border-white/30 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition backdrop-blur-sm"
                 >
                   {FIELD_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -329,7 +329,7 @@ h3{color:#2563eb;margin-top:24px}
                     onChange={(e) =>
                       updateField("studentCount", e.target.value)
                     }
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                    className="w-full px-4 py-2.5 bg-white/50 border border-white/30 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition backdrop-blur-sm"
                   />
                 </div>
                 <div>
@@ -342,7 +342,7 @@ h3{color:#2563eb;margin-top:24px}
                     max={16}
                     value={form.weeks}
                     onChange={(e) => updateField("weeks", e.target.value)}
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                    className="w-full px-4 py-2.5 bg-white/50 border border-white/30 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition backdrop-blur-sm"
                   />
                 </div>
               </div>
@@ -360,7 +360,7 @@ h3{color:#2563eb;margin-top:24px}
                     updateField("additionalContext", e.target.value)
                   }
                   placeholder="수업 특성, 학생 수준, 연계하고 싶은 실제 문제 등"
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-none"
+                  className="w-full px-4 py-2.5 bg-white/50 border border-white/30 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition resize-none backdrop-blur-sm"
                 />
               </div>
 
@@ -375,8 +375,8 @@ h3{color:#2563eb;margin-top:24px}
                       key={type.value}
                       className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition ${
                         form.problemType === type.value
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-gray-200 hover:border-gray-300 bg-white"
+                          ? "border-blue-500/50 bg-blue-50/50 shadow-md shadow-blue-500/10"
+                          : "border-white/30 hover:border-white/50 glass"
                       }`}
                     >
                       <input
@@ -406,7 +406,7 @@ h3{color:#2563eb;margin-top:24px}
               <button
                 onClick={handleGenerate}
                 disabled={!isValid || isGenerating}
-                className="w-full py-3.5 bg-[#1e3a5f] text-white font-semibold rounded-xl text-sm hover:bg-[#16304f] transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl text-sm hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg shadow-blue-500/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isGenerating ? (
                   <>
@@ -468,7 +468,7 @@ h3{color:#2563eb;margin-top:24px}
             {/* 결과 카드 */}
             <div
               ref={resultRef}
-              className="bg-white rounded-2xl border border-gray-200 min-h-[500px] max-h-[calc(100vh-180px)] overflow-y-auto"
+              className="glass-card rounded-2xl min-h-[500px] max-h-[calc(100vh-180px)] overflow-y-auto"
             >
               {!result && !isGenerating ? (
                 /* 빈 상태 */
@@ -505,7 +505,7 @@ h3{color:#2563eb;margin-top:24px}
                   <textarea
                     value={editText}
                     onChange={(e) => setEditText(e.target.value)}
-                    className="w-full min-h-[400px] text-sm font-mono leading-relaxed border border-gray-200 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
+                    className="w-full min-h-[400px] text-sm font-mono leading-relaxed bg-white/50 border border-white/30 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-y backdrop-blur-sm"
                   />
                   <div className="flex gap-2 mt-3">
                     <button
@@ -541,7 +541,7 @@ h3{color:#2563eb;margin-top:24px}
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={handleGenerate}
-                  className="px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition flex items-center gap-1.5"
+                  className="px-4 py-2.5 glass rounded-xl text-sm font-medium text-gray-700 hover:bg-white/80 transition flex items-center gap-1.5"
                 >
                   <svg
                     className="w-4 h-4"
@@ -560,7 +560,7 @@ h3{color:#2563eb;margin-top:24px}
                 </button>
                 <button
                   onClick={handleEdit}
-                  className="px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition flex items-center gap-1.5"
+                  className="px-4 py-2.5 glass rounded-xl text-sm font-medium text-gray-700 hover:bg-white/80 transition flex items-center gap-1.5"
                 >
                   <svg
                     className="w-4 h-4"
@@ -649,7 +649,7 @@ h3{color:#2563eb;margin-top:24px}
                 </button>
                 <button
                   onClick={handleExportPdf}
-                  className="px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition flex items-center gap-1.5"
+                  className="px-4 py-2.5 glass rounded-xl text-sm font-medium text-gray-700 hover:bg-white/80 transition flex items-center gap-1.5"
                 >
                   <svg
                     className="w-4 h-4"
@@ -685,7 +685,7 @@ h3{color:#2563eb;margin-top:24px}
                       <a
                         key={c.id}
                         href={`/contents/${c.id}`}
-                        className="flex items-center gap-3 p-3 bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition"
+                        className="flex items-center gap-3 p-3 glass-card rounded-xl hover:bg-white/80 transition-all duration-200"
                       >
                         <span
                           className={`${config.color} text-white text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0`}

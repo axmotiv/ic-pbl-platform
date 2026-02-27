@@ -127,14 +127,14 @@ export default function MySessionsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
-          <div className="h-8 bg-gray-200 rounded w-40 mb-6 animate-pulse" />
+      <div className="min-h-screen">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+          <div className="h-8 bg-white/40 rounded-lg w-40 mb-6 animate-pulse" />
           <div className="space-y-3">
             {Array.from({ length: 4 }).map((_, i) => (
               <div
                 key={i}
-                className="h-24 bg-white rounded-2xl border border-gray-200 animate-pulse"
+                className="h-24 glass-card rounded-2xl animate-pulse"
               />
             ))}
           </div>
@@ -144,10 +144,10 @@ export default function MySessionsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
+    <div className="min-h-screen">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         {/* 헤더 */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-8 animate-fade-in">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">내 작업</h1>
             <p className="text-sm text-gray-500 mt-1">
@@ -156,7 +156,7 @@ export default function MySessionsPage() {
           </div>
           <a
             href="/tools/problem-designer"
-            className="px-4 py-2.5 bg-[#1e3a5f] text-white text-sm font-medium rounded-xl hover:bg-[#16304f] transition flex items-center gap-1.5"
+            className="px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-medium rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-md shadow-blue-500/25 flex items-center gap-1.5"
           >
             <svg
               className="w-4 h-4"
@@ -185,9 +185,9 @@ export default function MySessionsPage() {
                 setIsEditing(false);
               }}
             />
-            <div className="relative bg-white rounded-2xl shadow-xl border border-gray-200 w-full max-w-3xl max-h-[85vh] flex flex-col z-10">
+            <div className="relative glass-strong rounded-3xl shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col z-10 animate-fade-in">
               {/* 모달 헤더 */}
-              <div className="flex items-center justify-between p-5 border-b border-gray-100">
+              <div className="flex items-center justify-between p-5 border-b border-gray-100/50">
                 <div className="min-w-0">
                   <h2 className="text-lg font-bold text-gray-900 truncate">
                     {getTitle(selectedSession)}
@@ -233,24 +233,24 @@ export default function MySessionsPage() {
               </div>
 
               {/* 입력값 요약 */}
-              <div className="px-5 py-3 bg-gray-50 border-b border-gray-100">
+              <div className="px-5 py-3 bg-white/30 border-b border-gray-100/50">
                 <div className="flex flex-wrap gap-2 text-xs">
-                  <span className="bg-white border border-gray-200 px-2 py-1 rounded-lg text-gray-600">
+                  <span className="bg-white/60 border border-white/30 px-2 py-1 rounded-lg text-gray-600 backdrop-blur-sm">
                     {selectedSession.input_data.courseName}
                   </span>
-                  <span className="bg-white border border-gray-200 px-2 py-1 rounded-lg text-gray-600">
+                  <span className="bg-white/60 border border-white/30 px-2 py-1 rounded-lg text-gray-600 backdrop-blur-sm">
                     {FIELD_LABELS[selectedSession.input_data.field] ||
                       selectedSession.input_data.field}
                   </span>
-                  <span className="bg-white border border-gray-200 px-2 py-1 rounded-lg text-gray-600">
+                  <span className="bg-white/60 border border-white/30 px-2 py-1 rounded-lg text-gray-600 backdrop-blur-sm">
                     {PROBLEM_TYPE_LABELS[
                       selectedSession.input_data.problemType
                     ] || selectedSession.input_data.problemType}
                   </span>
-                  <span className="bg-white border border-gray-200 px-2 py-1 rounded-lg text-gray-600">
+                  <span className="bg-white/60 border border-white/30 px-2 py-1 rounded-lg text-gray-600 backdrop-blur-sm">
                     {selectedSession.input_data.weeks}주
                   </span>
-                  <span className="bg-white border border-gray-200 px-2 py-1 rounded-lg text-gray-600">
+                  <span className="bg-white/60 border border-white/30 px-2 py-1 rounded-lg text-gray-600 backdrop-blur-sm">
                     {selectedSession.input_data.studentCount}명
                   </span>
                 </div>
@@ -262,7 +262,7 @@ export default function MySessionsPage() {
                   <textarea
                     value={editText}
                     onChange={(e) => setEditText(e.target.value)}
-                    className="w-full min-h-[350px] text-sm font-mono leading-relaxed border border-gray-200 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
+                    className="w-full min-h-[350px] text-sm font-mono leading-relaxed bg-white/50 border border-white/30 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-y backdrop-blur-sm"
                   />
                 ) : (
                   <div
@@ -339,7 +339,7 @@ export default function MySessionsPage() {
         {/* 세션 목록 */}
         {sessions.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
-            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+            <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-4">
               <svg
                 className="w-10 h-10 text-gray-300"
                 fill="none"
@@ -362,7 +362,7 @@ export default function MySessionsPage() {
             </p>
             <a
               href="/tools/problem-designer"
-              className="mt-4 px-5 py-2.5 bg-[#1e3a5f] text-white text-sm font-medium rounded-xl hover:bg-[#16304f] transition"
+              className="mt-4 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-medium rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-md shadow-blue-500/25"
             >
               문제 설계 시작하기
             </a>
@@ -373,7 +373,7 @@ export default function MySessionsPage() {
               <button
                 key={session.id}
                 onClick={() => setSelectedSession(session)}
-                className="w-full text-left bg-white rounded-2xl border border-gray-200 p-4 sm:p-5 hover:border-gray-300 hover:shadow-sm transition"
+                className="w-full text-left glass-card rounded-2xl p-4 sm:p-5 hover:-translate-y-0.5 transition-all duration-300"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">

@@ -8,12 +8,12 @@ import type { Content, Profile, Review } from "@/types/content";
 
 /* ─── 라벨 매핑 ─────────────────────────────────── */
 
-const TYPE_CONFIG: Record<string, { label: string; color: string }> = {
-  short_video: { label: "숏폼영상", color: "bg-rose-500" },
-  deep_dive: { label: "심화강의", color: "bg-blue-600" },
-  template: { label: "템플릿", color: "bg-emerald-500" },
-  case_series: { label: "사례시리즈", color: "bg-purple-500" },
-  interactive: { label: "인터랙티브", color: "bg-amber-500" },
+const TYPE_CONFIG: Record<string, { label: string; gradient: string }> = {
+  short_video: { label: "숏폼영상", gradient: "from-rose-500 to-pink-600" },
+  deep_dive: { label: "심화강의", gradient: "from-blue-500 to-indigo-600" },
+  template: { label: "템플릿", gradient: "from-emerald-500 to-teal-600" },
+  case_series: { label: "사례시리즈", gradient: "from-purple-500 to-violet-600" },
+  interactive: { label: "인터랙티브", gradient: "from-amber-500 to-orange-600" },
 };
 
 const SUBJECT_LABELS: Record<string, string> = {
@@ -26,9 +26,9 @@ const SUBJECT_LABELS: Record<string, string> = {
 };
 
 const DIFFICULTY_CONFIG: Record<string, { label: string; color: string }> = {
-  beginner: { label: "입문", color: "bg-green-100 text-green-700" },
-  intermediate: { label: "실천", color: "bg-yellow-100 text-yellow-700" },
-  advanced: { label: "심화", color: "bg-red-100 text-red-700" },
+  beginner: { label: "입문", color: "bg-green-100/80 text-green-700" },
+  intermediate: { label: "실천", color: "bg-yellow-100/80 text-yellow-700" },
+  advanced: { label: "심화", color: "bg-red-100/80 text-red-700" },
 };
 
 const PBL_STAGE_LABELS: Record<string, string> = {
@@ -269,7 +269,7 @@ export default function ContentDetailPage() {
 
   if (!content) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center gap-4">
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
         <p className="text-lg font-medium text-gray-500">
           콘텐츠를 찾을 수 없습니다
         </p>
@@ -285,7 +285,7 @@ export default function ContentDetailPage() {
 
   const typeConfig = TYPE_CONFIG[content.type] ?? {
     label: content.type,
-    color: "bg-gray-500",
+    gradient: "from-gray-500 to-gray-600",
   };
   const subjectLabel =
     SUBJECT_LABELS[content.subject_area] ?? content.subject_area;
@@ -300,7 +300,7 @@ export default function ContentDetailPage() {
   const isTemplate = content.type === "template";
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* 비디오 플레이어 */}
       {isVideo && (
         <div className="bg-black">
@@ -326,7 +326,7 @@ export default function ContentDetailPage() {
             <section>
               {/* 유형 뱃지 */}
               <span
-                className={`inline-block px-3 py-1 text-xs font-semibold text-white rounded-lg mb-3 ${typeConfig.color}`}
+                className={`inline-block px-3 py-1 text-xs font-semibold text-white rounded-lg mb-3 bg-gradient-to-r ${typeConfig.gradient} shadow-md`}
               >
                 {typeConfig.label}
               </span>
@@ -338,7 +338,7 @@ export default function ContentDetailPage() {
               {/* 작성자 정보 */}
               {author && (
                 <div className="flex items-center gap-3 mt-4">
-                  <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-semibold text-sm shrink-0">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 text-white rounded-full flex items-center justify-center font-semibold text-sm shrink-0 shadow-md shadow-blue-500/20">
                     {author.name.charAt(0)}
                   </div>
                   <div>
@@ -375,7 +375,7 @@ export default function ContentDetailPage() {
 
               {/* 태그들 */}
               <div className="flex flex-wrap gap-2 mt-4">
-                <span className="px-2.5 py-1 text-xs font-medium bg-blue-50 text-blue-600 rounded-full">
+                <span className="px-2.5 py-1 text-xs font-medium bg-blue-50/80 text-blue-600 rounded-full backdrop-blur-sm">
                   {subjectLabel}
                 </span>
                 <span
@@ -419,7 +419,7 @@ export default function ContentDetailPage() {
                         className={`w-full flex items-center gap-4 p-3 rounded-xl text-left transition ${
                           isCurrent
                             ? "bg-blue-50 border-2 border-blue-200"
-                            : "bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 cursor-pointer"
+                            : "glass hover:bg-white/80 cursor-pointer"
                         }`}
                       >
                         <div
@@ -467,7 +467,7 @@ export default function ContentDetailPage() {
               {userId ? (
                 <form
                   onSubmit={handleReviewSubmit}
-                  className="bg-white rounded-xl border border-gray-200 p-5 mb-6"
+                  className="glass-card rounded-2xl p-5 mb-6"
                 >
                   <p className="text-sm font-medium text-gray-700 mb-3">
                     {existingReview ? "내 리뷰 수정" : "리뷰 작성"}
@@ -508,13 +508,13 @@ export default function ContentDetailPage() {
                     onChange={(e) => setReviewComment(e.target.value)}
                     placeholder="이 콘텐츠에 대한 의견을 남겨주세요..."
                     rows={3}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-none"
+                    className="w-full px-4 py-3 bg-white/50 border border-white/30 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition resize-none backdrop-blur-sm"
                   />
                   <div className="flex justify-end mt-3">
                     <button
                       type="submit"
                       disabled={myRating === 0 || reviewSubmitting}
-                      className="px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-medium rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-md shadow-blue-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {reviewSubmitting
                         ? "저장 중..."
@@ -525,7 +525,7 @@ export default function ContentDetailPage() {
                   </div>
                 </form>
               ) : (
-                <div className="bg-gray-50 rounded-xl p-5 mb-6 text-center">
+                <div className="glass rounded-2xl p-5 mb-6 text-center">
                   <p className="text-sm text-gray-500">
                     리뷰를 작성하려면{" "}
                     <button
@@ -549,7 +549,7 @@ export default function ContentDetailPage() {
                   {reviews.map((review) => (
                     <div
                       key={review.id}
-                      className="bg-white rounded-xl border border-gray-200 p-4"
+                      className="glass-card rounded-2xl p-4"
                     >
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
@@ -603,7 +603,7 @@ export default function ContentDetailPage() {
           {/* 우측: 사이드바 (액션 + 관련 콘텐츠) */}
           <aside className="mt-8 lg:mt-0 space-y-6">
             {/* 액션 버튼 */}
-            <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-3">
+            <div className="glass-card rounded-2xl p-5 space-y-3">
               {/* 북마크 */}
               <button
                 onClick={handleBookmark}
@@ -611,7 +611,7 @@ export default function ContentDetailPage() {
                 className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition ${
                   bookmarked
                     ? "bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100"
-                    : "bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100"
+                    : "glass text-gray-700 hover:bg-white/80"
                 } ${!userId ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 <svg
@@ -633,7 +633,7 @@ export default function ContentDetailPage() {
               {/* 공유 */}
               <button
                 onClick={handleShare}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100 transition"
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium glass text-gray-700 hover:bg-white/80 transition"
               >
                 <svg
                   className="w-4.5 h-4.5"
@@ -679,7 +679,7 @@ export default function ContentDetailPage() {
               {/* 내 수업에 적용 */}
               <button
                 onClick={() => router.push("/ai-design")}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 transition"
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 transition-all shadow-md shadow-blue-500/25"
               >
                 <svg
                   className="w-4.5 h-4.5"
@@ -754,7 +754,7 @@ function ClockIcon() {
 
 function DetailSkeleton() {
   return (
-    <div className="min-h-screen bg-gray-50 animate-pulse">
+    <div className="min-h-screen animate-pulse">
       <div className="bg-black">
         <div className="max-w-5xl mx-auto">
           <div className="aspect-video bg-gray-800" />
@@ -784,7 +784,7 @@ function DetailSkeleton() {
             </div>
           </div>
           <div className="mt-8 lg:mt-0 space-y-3">
-            <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-3">
+            <div className="glass-card rounded-2xl p-5 space-y-3">
               <div className="h-10 bg-gray-200 rounded-xl" />
               <div className="h-10 bg-gray-200 rounded-xl" />
               <div className="h-10 bg-gray-200 rounded-xl" />

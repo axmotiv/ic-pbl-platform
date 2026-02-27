@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { Content } from "@/types/content";
 
-const TYPE_CONFIG: Record<string, { label: string; color: string }> = {
-  short_video: { label: "숏폼", color: "bg-rose-500" },
-  deep_dive: { label: "심화강의", color: "bg-blue-600" },
-  template: { label: "템플릿", color: "bg-emerald-500" },
-  case_series: { label: "사례시리즈", color: "bg-purple-500" },
-  interactive: { label: "인터랙티브", color: "bg-amber-500" },
+const TYPE_CONFIG: Record<string, { label: string; gradient: string }> = {
+  short_video: { label: "숏폼", gradient: "from-rose-500 to-pink-600" },
+  deep_dive: { label: "심화강의", gradient: "from-blue-500 to-indigo-600" },
+  template: { label: "템플릿", gradient: "from-emerald-500 to-teal-600" },
+  case_series: { label: "사례시리즈", gradient: "from-purple-500 to-violet-600" },
+  interactive: { label: "인터랙티브", gradient: "from-amber-500 to-orange-600" },
 };
 
 const SUBJECT_LABELS: Record<string, string> = {
@@ -23,9 +23,9 @@ const SUBJECT_LABELS: Record<string, string> = {
 };
 
 const DIFFICULTY_CONFIG: Record<string, { label: string; color: string }> = {
-  beginner: { label: "입문", color: "bg-green-100 text-green-700" },
-  intermediate: { label: "실천", color: "bg-yellow-100 text-yellow-700" },
-  advanced: { label: "심화", color: "bg-red-100 text-red-700" },
+  beginner: { label: "입문", color: "bg-green-100/80 text-green-700" },
+  intermediate: { label: "실천", color: "bg-yellow-100/80 text-yellow-700" },
+  advanced: { label: "심화", color: "bg-red-100/80 text-red-700" },
 };
 
 interface ContentCardProps {
@@ -45,12 +45,12 @@ export default function ContentCard({
 
   const typeConfig = TYPE_CONFIG[content.type] ?? {
     label: content.type,
-    color: "bg-gray-500",
+    gradient: "from-gray-500 to-gray-600",
   };
   const subjectLabel = SUBJECT_LABELS[content.subject_area] ?? content.subject_area;
   const difficultyConfig = DIFFICULTY_CONFIG[content.difficulty] ?? {
     label: content.difficulty,
-    color: "bg-gray-100 text-gray-700",
+    color: "bg-gray-100/80 text-gray-700",
   };
 
   const handleBookmarkToggle = async (e: React.MouseEvent) => {
@@ -83,18 +83,18 @@ export default function ContentCard({
   return (
     <article
       onClick={() => router.push(`/contents/${content.id}`)}
-      className="group cursor-pointer bg-white rounded-2xl border border-gray-200 overflow-hidden transition-all duration-200 hover:shadow-lg hover:-translate-y-1"
+      className="group cursor-pointer glass-card rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-1.5"
     >
       {/* 썸네일 */}
-      <div className="relative aspect-video bg-gray-100 overflow-hidden">
+      <div className="relative aspect-video bg-gray-100/50 overflow-hidden">
         {content.thumbnail_url ? (
           <img
             src={content.thumbnail_url}
             alt={content.title}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
             <svg
               className="w-12 h-12 text-gray-300"
               fill="none"
@@ -119,13 +119,13 @@ export default function ContentCard({
 
         {/* 유형 뱃지 */}
         <span
-          className={`absolute top-3 left-3 px-2.5 py-1 text-xs font-semibold text-white rounded-lg ${typeConfig.color}`}
+          className={`absolute top-3 left-3 px-2.5 py-1 text-xs font-semibold text-white rounded-lg bg-gradient-to-r ${typeConfig.gradient} shadow-md`}
         >
           {typeConfig.label}
         </span>
 
         {/* 소요시간 뱃지 */}
-        <span className="absolute bottom-3 right-3 px-2 py-0.5 text-xs font-medium text-white bg-black/70 rounded-md">
+        <span className="absolute bottom-3 right-3 px-2 py-0.5 text-xs font-medium text-white bg-black/50 backdrop-blur-sm rounded-md">
           {durationDisplay}
         </span>
       </div>
@@ -139,11 +139,11 @@ export default function ContentCard({
 
         {/* 태그들 */}
         <div className="flex items-center gap-1.5 mb-3 flex-wrap">
-          <span className="px-2 py-0.5 text-xs font-medium bg-blue-50 text-blue-600 rounded-full">
+          <span className="px-2 py-0.5 text-xs font-medium bg-blue-50/80 text-blue-600 rounded-full backdrop-blur-sm">
             {subjectLabel}
           </span>
           <span
-            className={`px-2 py-0.5 text-xs font-medium rounded-full ${difficultyConfig.color}`}
+            className={`px-2 py-0.5 text-xs font-medium rounded-full backdrop-blur-sm ${difficultyConfig.color}`}
           >
             {difficultyConfig.label}
           </span>
@@ -184,10 +184,10 @@ export default function ContentCard({
           <button
             onClick={handleBookmarkToggle}
             disabled={!userId || bookmarkLoading}
-            className={`p-1.5 rounded-full transition-colors ${
+            className={`p-1.5 rounded-full transition-all duration-200 ${
               bookmarked
-                ? "text-rose-500 hover:bg-rose-50"
-                : "text-gray-300 hover:text-rose-400 hover:bg-gray-50"
+                ? "text-rose-500 hover:bg-rose-50/60"
+                : "text-gray-300 hover:text-rose-400 hover:bg-gray-50/60"
             } ${!userId ? "opacity-40 cursor-default" : ""}`}
             aria-label={bookmarked ? "북마크 해제" : "북마크"}
           >

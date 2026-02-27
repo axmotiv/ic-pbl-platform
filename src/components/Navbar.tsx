@@ -95,21 +95,21 @@ export default function Navbar() {
   const displayName = profile?.name || user?.email?.split("@")[0] || "";
 
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <nav className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-sm">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           {/* ─── 로고 ─── */}
-          <a href="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-8 h-8 bg-[#1e3a5f] rounded-lg flex items-center justify-center">
-              <span className="text-white text-xs font-bold">IC</span>
+          <a href="/" className="flex items-center gap-2.5 shrink-0 group">
+            <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:shadow-blue-500/40 transition-shadow">
+              <span className="text-white text-xs font-bold tracking-tight">IC</span>
             </div>
-            <span className="text-lg font-bold text-gray-900 hidden sm:block">
+            <span className="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent hidden sm:block">
               IC-PBL
             </span>
           </a>
 
           {/* ─── 중앙 내비게이션 (desktop) ─── */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-1 bg-white/40 backdrop-blur-sm rounded-2xl p-1 border border-white/30">
             {NAV_ITEMS.map((item) => (
               <a
                 key={item.href}
@@ -121,17 +121,17 @@ export default function Navbar() {
                         e.preventDefault();
                       }
                 }
-                className={`relative px-3.5 py-2 text-sm font-medium rounded-lg transition ${
+                className={`relative px-4 py-2 text-sm font-medium rounded-xl transition-all duration-200 ${
                   !item.ready
                     ? "text-gray-300 cursor-default"
                     : isActive(item.href)
-                      ? "text-[#1e3a5f] bg-blue-50"
-                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                      ? "text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md shadow-blue-500/25"
+                      : "text-gray-600 hover:text-gray-900 hover:bg-white/60"
                 }`}
               >
                 {item.label}
                 {!item.ready && (
-                  <span className="ml-1 text-[10px] bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded-full">
+                  <span className="ml-1 text-[10px] bg-gray-100/80 text-gray-400 px-1.5 py-0.5 rounded-full">
                     준비중
                   </span>
                 )}
@@ -142,12 +142,12 @@ export default function Navbar() {
           {/* ─── 우측 액션 ─── */}
           <div className="flex items-center gap-2">
             {loading ? (
-              <div className="w-20 h-9 bg-gray-100 rounded-lg animate-pulse" />
+              <div className="w-20 h-9 bg-white/40 rounded-xl animate-pulse" />
             ) : user ? (
               <>
                 {/* 알림 아이콘 */}
                 <button
-                  className="relative p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition"
+                  className="relative p-2 text-gray-400 hover:text-gray-600 hover:bg-white/60 rounded-xl transition-all duration-200"
                   title="알림"
                 >
                   <svg
@@ -169,16 +169,16 @@ export default function Navbar() {
                 <div ref={profileRef} className="relative">
                   <button
                     onClick={() => setProfileOpen(!profileOpen)}
-                    className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-gray-100 transition"
+                    className="flex items-center gap-2 px-2 py-1.5 rounded-xl hover:bg-white/60 transition-all duration-200"
                   >
-                    <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-semibold text-sm">
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-500 text-white rounded-full flex items-center justify-center font-semibold text-sm shadow-md shadow-blue-500/20">
                       {displayName.charAt(0).toUpperCase()}
                     </div>
                     <span className="hidden sm:block text-sm font-medium text-gray-700 max-w-[120px] truncate">
                       {displayName}
                     </span>
                     <svg
-                      className={`w-4 h-4 text-gray-400 transition-transform ${profileOpen ? "rotate-180" : ""}`}
+                      className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${profileOpen ? "rotate-180" : ""}`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -193,10 +193,10 @@ export default function Navbar() {
                   </button>
 
                   {profileOpen && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200 py-1 z-50">
+                    <div className="absolute right-0 mt-2 w-56 glass-strong rounded-2xl shadow-xl py-1 z-50 animate-fade-in">
                       {/* 유저 정보 */}
-                      <div className="px-4 py-3 border-b border-gray-100">
-                        <p className="text-sm font-medium text-gray-900">
+                      <div className="px-4 py-3 border-b border-gray-100/50">
+                        <p className="text-sm font-semibold text-gray-900">
                           {profile?.name || "사용자"}
                         </p>
                         <p className="text-xs text-gray-400 truncate">
@@ -212,7 +212,7 @@ export default function Navbar() {
                       <a
                         href="/auth/profile-setup"
                         onClick={() => setProfileOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition"
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-white/60 transition-colors"
                       >
                         <svg
                           className="w-4 h-4 text-gray-400"
@@ -232,7 +232,7 @@ export default function Navbar() {
                       <a
                         href="/tools/my-sessions"
                         onClick={() => setProfileOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition"
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-white/60 transition-colors"
                       >
                         <svg
                           className="w-4 h-4 text-gray-400"
@@ -249,10 +249,10 @@ export default function Navbar() {
                         </svg>
                         내 작업
                       </a>
-                      <div className="border-t border-gray-100 mt-1">
+                      <div className="border-t border-gray-100/50 mt-1">
                         <button
                           onClick={handleLogout}
-                          className="flex items-center gap-2.5 w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition"
+                          className="flex items-center gap-2.5 w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50/60 transition-colors"
                         >
                           <svg
                             className="w-4 h-4"
@@ -278,13 +278,13 @@ export default function Navbar() {
               <div className="flex items-center gap-2">
                 <a
                   href="/auth/login"
-                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-white/60 rounded-xl transition-all duration-200"
                 >
                   로그인
                 </a>
                 <a
                   href="/auth/signup"
-                  className="px-4 py-2 text-sm font-medium text-white bg-[#1e3a5f] hover:bg-[#16304f] rounded-lg transition"
+                  className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-xl transition-all duration-200 shadow-md shadow-blue-500/25"
                 >
                   회원가입
                 </a>
@@ -294,7 +294,7 @@ export default function Navbar() {
             {/* ─── 모바일 햄버거 ─── */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition"
+              className="md:hidden p-2 text-gray-600 hover:bg-white/60 rounded-xl transition-all duration-200"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileOpen ? (
@@ -310,7 +310,7 @@ export default function Navbar() {
 
       {/* ─── 모바일 메뉴 ─── */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-gray-100 bg-white">
+        <div className="md:hidden border-t border-white/20 bg-white/70 backdrop-blur-xl">
           <div className="px-4 py-3 space-y-1">
             {NAV_ITEMS.map((item) => (
               <a
@@ -319,17 +319,17 @@ export default function Navbar() {
                 onClick={() => {
                   if (item.ready) setMobileOpen(false);
                 }}
-                className={`block px-3 py-2.5 text-sm font-medium rounded-lg transition ${
+                className={`block px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 ${
                   !item.ready
                     ? "text-gray-300 cursor-default"
                     : isActive(item.href)
-                      ? "text-[#1e3a5f] bg-blue-50"
-                      : "text-gray-600 hover:bg-gray-100"
+                      ? "text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md"
+                      : "text-gray-600 hover:bg-white/60"
                 }`}
               >
                 {item.label}
                 {!item.ready && (
-                  <span className="ml-1 text-[10px] bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded-full">
+                  <span className="ml-1 text-[10px] bg-gray-100/80 text-gray-400 px-1.5 py-0.5 rounded-full">
                     준비중
                   </span>
                 )}

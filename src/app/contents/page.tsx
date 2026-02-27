@@ -44,7 +44,6 @@ function ContentsPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // URL 파라미터에서 필터 값 읽기
   const currentType = searchParams.get("type") ?? "";
   const currentSubject = searchParams.get("subject") ?? "";
   const currentDifficulty = searchParams.get("difficulty") ?? "";
@@ -59,7 +58,6 @@ function ContentsPageInner() {
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<string>>(new Set());
   const pageRef = useRef(0);
 
-  // URL 파라미터 업데이트
   const updateFilter = useCallback(
     (key: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString());
@@ -73,13 +71,11 @@ function ContentsPageInner() {
     [router, searchParams]
   );
 
-  // 검색 제출
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     updateFilter("q", searchInput.trim());
   };
 
-  // 콘텐츠 가져오기
   const fetchContents = useCallback(
     async (page: number, append = false) => {
       if (page === 0) setLoading(true);
@@ -115,7 +111,6 @@ function ContentsPageInner() {
     [currentType, currentSubject, currentDifficulty, currentSearch]
   );
 
-  // 유저 정보 & 북마크 가져오기
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -134,13 +129,11 @@ function ContentsPageInner() {
     });
   }, []);
 
-  // 필터 변경 시 데이터 리셋 & 재패치
   useEffect(() => {
     pageRef.current = 0;
     fetchContents(0);
   }, [fetchContents]);
 
-  // 더보기
   const handleLoadMore = () => {
     const nextPage = pageRef.current + 1;
     pageRef.current = nextPage;
@@ -148,18 +141,18 @@ function ContentsPageInner() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
+    <div className="min-h-screen">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         {/* 페이지 헤더 */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">콘텐츠 허브</h1>
-          <p className="text-sm text-gray-500 mt-1">
+        <div className="mb-8 animate-fade-in">
+          <h1 className="text-3xl font-bold text-gray-900">콘텐츠 허브</h1>
+          <p className="text-sm text-gray-500 mt-2">
             PBL 교수법에 대한 다양한 콘텐츠를 탐색하세요
           </p>
         </div>
 
         {/* 검색바 */}
-        <form onSubmit={handleSearch} className="mb-5">
+        <form onSubmit={handleSearch} className="mb-6 animate-fade-in" style={{ animationDelay: "0.1s" }}>
           <div className="relative">
             <svg
               className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -179,7 +172,7 @@ function ContentsPageInner() {
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="콘텐츠 검색..."
-              className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+              className="w-full pl-12 pr-4 py-3.5 glass-strong rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-200 placeholder:text-gray-400"
             />
             {searchInput && (
               <button
@@ -188,7 +181,7 @@ function ContentsPageInner() {
                   setSearchInput("");
                   updateFilter("q", "");
                 }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -204,22 +197,19 @@ function ContentsPageInner() {
         </form>
 
         {/* 필터 바 */}
-        <div className="space-y-3 mb-8">
-          {/* 콘텐츠 유형 */}
+        <div className="space-y-3 mb-10 animate-fade-in" style={{ animationDelay: "0.15s" }}>
           <FilterRow
             label="유형"
             options={TYPE_FILTERS}
             value={currentType}
             onChange={(v) => updateFilter("type", v)}
           />
-          {/* 주제 */}
           <FilterRow
             label="주제"
             options={SUBJECT_FILTERS}
             value={currentSubject}
             onChange={(v) => updateFilter("subject", v)}
           />
-          {/* 난이도 */}
           <FilterRow
             label="난이도"
             options={DIFFICULTY_FILTERS}
@@ -236,9 +226,8 @@ function ContentsPageInner() {
             ))}
           </div>
         ) : contents.length === 0 ? (
-          /* 빈 상태 */
           <div className="flex flex-col items-center justify-center py-24 text-center">
-            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+            <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-4">
               <svg
                 className="w-10 h-10 text-gray-300"
                 fill="none"
@@ -273,13 +262,12 @@ function ContentsPageInner() {
               ))}
             </div>
 
-            {/* 더보기 버튼 */}
             {hasMore && (
-              <div className="flex justify-center mt-10">
+              <div className="flex justify-center mt-12">
                 <button
                   onClick={handleLoadMore}
                   disabled={loadingMore}
-                  className="px-8 py-3 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition disabled:opacity-50"
+                  className="px-8 py-3 glass-strong rounded-2xl text-sm font-medium text-gray-700 hover:bg-white/90 transition-all duration-200 disabled:opacity-50"
                 >
                   {loadingMore ? (
                     <span className="flex items-center gap-2">
@@ -340,10 +328,10 @@ function FilterRow({
           <button
             key={opt.value}
             onClick={() => onChange(opt.value)}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition ${
+            className={`px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 ${
               value === opt.value
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/25"
+                : "glass text-gray-600 hover:bg-white/80"
             }`}
           >
             {opt.label}
@@ -358,18 +346,18 @@ function FilterRow({
 
 function SkeletonCard() {
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden animate-pulse">
-      <div className="aspect-video bg-gray-200" />
+    <div className="glass-card rounded-3xl overflow-hidden animate-pulse">
+      <div className="aspect-video bg-white/30" />
       <div className="p-4 space-y-3">
-        <div className="h-4 bg-gray-200 rounded w-3/4" />
-        <div className="h-3 bg-gray-100 rounded w-1/2" />
+        <div className="h-4 bg-white/40 rounded-lg w-3/4" />
+        <div className="h-3 bg-white/30 rounded-lg w-1/2" />
         <div className="flex gap-2">
-          <div className="h-5 bg-gray-100 rounded-full w-14" />
-          <div className="h-5 bg-gray-100 rounded-full w-10" />
+          <div className="h-5 bg-white/30 rounded-full w-14" />
+          <div className="h-5 bg-white/30 rounded-full w-10" />
         </div>
         <div className="flex justify-between">
-          <div className="h-3 bg-gray-100 rounded w-20" />
-          <div className="h-5 w-5 bg-gray-100 rounded-full" />
+          <div className="h-3 bg-white/30 rounded w-20" />
+          <div className="h-5 w-5 bg-white/30 rounded-full" />
         </div>
       </div>
     </div>
@@ -380,20 +368,20 @@ function SkeletonCard() {
 
 function ContentsPageSkeleton() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
-        <div className="mb-6">
-          <div className="h-8 bg-gray-200 rounded w-36 animate-pulse" />
-          <div className="h-4 bg-gray-100 rounded w-64 mt-2 animate-pulse" />
+    <div className="min-h-screen">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+        <div className="mb-8">
+          <div className="h-8 bg-white/40 rounded-lg w-36 animate-pulse" />
+          <div className="h-4 bg-white/30 rounded-lg w-64 mt-2 animate-pulse" />
         </div>
-        <div className="h-12 bg-gray-200 rounded-xl mb-5 animate-pulse" />
-        <div className="space-y-3 mb-8">
+        <div className="h-14 glass rounded-2xl mb-6 animate-pulse" />
+        <div className="space-y-3 mb-10">
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="flex items-center gap-3">
-              <div className="h-4 bg-gray-200 rounded w-10 animate-pulse" />
+              <div className="h-4 bg-white/40 rounded w-10 animate-pulse" />
               <div className="flex gap-2">
                 {Array.from({ length: 4 }).map((_, j) => (
-                  <div key={j} className="h-8 bg-gray-200 rounded-full w-16 animate-pulse" />
+                  <div key={j} className="h-8 bg-white/30 rounded-full w-16 animate-pulse" />
                 ))}
               </div>
             </div>
