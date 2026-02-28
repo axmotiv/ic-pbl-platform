@@ -43,3 +43,6 @@ next-env.d.ts
 # archives
 *.tar.gz
 *.b64
+
+# supabase
+supabase/.temp/
